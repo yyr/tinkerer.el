@@ -1,11 +1,11 @@
-;;; tinkerer --- elisp wrapper for tinkerer blog engine.
+;;; tinkerer --- Elisp wrapper for Tinkerer blogging engine.
 
 ;; Copyright (C) 2015 Yagnesh Raghava Yakkala
 
 ;; Author: Yagnesh Raghava Yakkala <hi@yagnesh.org>
 ;; Created: 19 Feb 2015
 ;; Version: 0.1
-;; Package-Requires: (s)
+;; Package-Requires: ((s))
 ;; Keywords: Tinkerer, blog, wrapper
 ;; X-URL: https://github.com/yyr/tinkerer.el
 
