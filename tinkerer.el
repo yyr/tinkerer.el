@@ -25,8 +25,9 @@
 ;; Boston, MA 02111-1307, USA.
 
 ;;; Commentary:
-
 ;;
+
+;;; Code:
 
 (require 's)
 
@@ -76,7 +77,7 @@
 
 ;;;###autoload
 (defun tinkerer-draft (title)
-  "Run tinkerer build command."
+  "Read TITLE and create a draft with it."
   (interactive
    (list
     (funcall #'read-from-minibuffer
@@ -89,7 +90,7 @@
 
 ;;;###autoload
 (defun tinkerer-post (title)
-  "Run tinkerer build command."
+  "Read TITLE and create a post with it."
   (interactive
    (list
     (funcall #'read-from-minibuffer
@@ -102,7 +103,7 @@
 
 ;;;###autoload
 (defun tinkerer-page (title)
-  "Run tinkerer build command."
+  "Read TITLE and create a page with it."
   (interactive
    (list
     (read-from-minibuffer
