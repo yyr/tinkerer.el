@@ -66,14 +66,18 @@
 ;;;
 (defvar tinkerer--hist nil)
 
+(defun tinkerer--construct-command (&rest args)
+  "Build a safely-escaped command line to run tinkerer with ARGS."
+  (mapconcat #'identity
+             (append (list tinkerer-executable) (mapcar #'shell-quote-argument args))
+             " "))
+
 ;;;###autoload
 (defun tinkerer-build ()
   "Run tinkerer build command."
   (interactive)
   (let ((default-directory tinkerer-root-path))
-    (async-shell-command
-     (format "%s %s"
-             tinkerer-executable "-b"))))
+    (async-shell-command (tinkerer--construct-command "-b"))))
 
 ;;;###autoload
 (defun tinkerer-draft (title)
@@ -85,8 +89,7 @@
   (let ((default-directory tinkerer-root-path))
     (find-file-other-window
      (s-trim (shell-command-to-string
-              (format "%s -f %s \"%s\""
-                      tinkerer-executable "-d" title))))))
+              (tinkerer--construct-command "-f" "-d" title))))))
 
 ;;;###autoload
 (defun tinkerer-post (arg &optional title)
@@ -102,8 +105,7 @@ If prefix argument ARG provided move a draft and publish it."
             (default-directory tinkerer-root-path))
         (find-file-other-window
          (s-trim (shell-command-to-string
-                  (format "%s -f %s \"%s\""
-                          tinkerer-executable "-p" title)))))
+                  (tinkerer--construct-command "-f" "-p" title)))))
     ;; move draft and post.
     (let* ((drafts-path (expand-file-name "drafts" tinkerer-root-path))
            (draft (ido-completing-read "Draft file: " (directory-files drafts-path)
@@ -111,9 +113,7 @@ If prefix argument ARG provided move a draft and publish it."
       (let ((default-directory tinkerer-root-path)
             (temp-buf "*temp-buf*"))
         (async-shell-command
-         (format "%s %s %s %s"
-                 tinkerer-executable "-f"
-                 "-p" (expand-file-name draft drafts-path)))))))
+         (tinkerer--construct-command "-f" "-p" (expand-file-name draft drafts-path)))))))
 
 ;;;###autoload
 (defun tinkerer-page (title)
@@ -125,8 +125,7 @@ If prefix argument ARG provided move a draft and publish it."
   (let ((default-directory tinkerer-root-path))
     (find-file-other-window
      (s-trim (shell-command-to-string
-              (format "%s -f %s \"%s\""
-                      tinkerer-executable "--page" title))))))
+              (tinkerer--construct-command "-f" "--page" title))))))
 
 ;;;###autoload
 (defun tinkerer-preview-draft ()
@@ -137,9 +136,7 @@ If prefix argument ARG provided move a draft and publish it."
                                      nil t nil tinkerer--hist)))
     (let ((default-directory tinkerer-root-path))
       (async-shell-command
-       (format "%s %s %s"
-               tinkerer-executable "--preview"
-               (expand-file-name draft drafts-path))))))
+       (tinkerer--construct-command "--preview" (expand-file-name draft drafts-path))))))
 
 (provide 'tinkerer)
 ;;; tinkerer.el ends here
