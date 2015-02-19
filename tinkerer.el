@@ -5,7 +5,7 @@
 ;; Author: Yagnesh Raghava Yakkala <hi@yagnesh.org>
 ;; Created: 19 Feb 2015
 ;; Version: 0.1
-;; Package-Requires: ((s))
+;; Package-Requires: ((s "1.2.0"))
 ;; Keywords: Tinkerer, blog, wrapper
 ;; X-URL: https://github.com/yyr/tinkerer.el
 
