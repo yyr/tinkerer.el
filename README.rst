@@ -1,1 +1,1 @@
-Elisp wrapper for Tinkerer blogging engine.
+Elisp wrapper for Tinkerer Blogging Engine.
