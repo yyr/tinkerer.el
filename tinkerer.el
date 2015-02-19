@@ -89,17 +89,31 @@
                       tinkerer-executable "-d" title))))))
 
 ;;;###autoload
-(defun tinkerer-post (title)
-  "Read TITLE and create a post with it."
-  (interactive
-   (list
-    (funcall #'read-from-minibuffer
-             "Title of the  Post: " nil nil nil tinkerer--hist "new-draft")))
-  (let ((default-directory tinkerer-root-path))
-    (find-file-other-window
-     (s-trim (shell-command-to-string
-              (format "%s -f %s \"%s\""
-                      tinkerer-executable "-p" title))))))
+(defun tinkerer-post (arg &optional title)
+  "Read TITLE and create a post with it.
+If prefix argument ARG provided move a draft and publish it."
+  (interactive "p")
+  (if (not (= arg 4))
+      ;; new post
+      (let ((title (if title
+                       title
+                     (funcall #'read-from-minibuffer
+                              "Title of the  Post: " nil nil nil tinkerer--hist "new-draft")))
+            (default-directory tinkerer-root-path))
+        (find-file-other-window
+         (s-trim (shell-command-to-string
+                  (format "%s -f %s \"%s\""
+                          tinkerer-executable "-p" title)))))
+    ;; move draft and post.
+    (let* ((drafts-path (expand-file-name "drafts" tinkerer-root-path))
+           (draft (ido-completing-read "Draft file: " (directory-files drafts-path)
+                                       nil t nil tinkerer--hist)))
+      (let ((default-directory tinkerer-root-path)
+            (temp-buf "*temp-buf*"))
+        (async-shell-command
+         (format "%s %s %s %s"
+                 tinkerer-executable "-f"
+                 "-p" (expand-file-name draft drafts-path)))))))
 
 ;;;###autoload
 (defun tinkerer-page (title)
