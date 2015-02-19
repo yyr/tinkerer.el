@@ -1,4 +1,4 @@
-;;; tinkerer --- Elisp wrapper for Tinkerer blogging engine.
+;;; tinkerer --- Elisp wrapper for Tinkerer Blogging Engine.
 
 ;; Copyright (C) 2015 Yagnesh Raghava Yakkala
 
@@ -62,6 +62,9 @@
     map)
   "Tinkerer key map.")
 
+;;;
+(defvar tinkerer--hist nil)
+
 ;;;###autoload
 (defun tinkerer-build ()
   "Run tinkerer build command."
@@ -77,7 +80,7 @@
   (interactive
    (list
     (funcall #'read-from-minibuffer
-             "Title of the Draft: " nil nil nil t "new-draft")))
+             "Title of the Draft: " nil nil nil tinkerer--hist "new-draft")))
   (let ((default-directory tinkerer-root-path))
     (find-file-other-window
      (s-trim (shell-command-to-string
@@ -90,7 +93,7 @@
   (interactive
    (list
     (funcall #'read-from-minibuffer
-             "Title of the  Post: " nil nil nil t "new-draft")))
+             "Title of the  Post: " nil nil nil tinkerer--hist "new-draft")))
   (let ((default-directory tinkerer-root-path))
     (find-file-other-window
      (s-trim (shell-command-to-string
@@ -102,8 +105,8 @@
   "Run tinkerer build command."
   (interactive
    (list
-    (funcall #'read-from-minibuffer
-             "Title of the Page: " nil nil nil t "new-draft")))
+    (read-from-minibuffer
+     "Title of the Page: "  nil nil nil tinkerer--hist "new-draft")))
   (let ((default-directory tinkerer-root-path))
     (find-file-other-window
      (s-trim (shell-command-to-string
@@ -111,8 +114,17 @@
                       tinkerer-executable "--page" title))))))
 
 ;;;###autoload
-(defun tinkerer-preview-draft (draft)
-  "Build draft preview.")
+(defun tinkerer-preview-draft ()
+  "Build draft preview."
+  (interactive)
+  (let* ((drafts-path (expand-file-name "drafts" tinkerer-root-path))
+         (draft (ido-completing-read "Draft file: " (directory-files drafts-path)
+                                     nil t nil tinkerer--hist)))
+    (let ((default-directory tinkerer-root-path))
+      (async-shell-command
+       (format "%s %s %s"
+               tinkerer-executable "--preview"
+               (expand-file-name draft drafts-path))))))
 
 (provide 'tinkerer)
 ;;; tinkerer.el ends here
