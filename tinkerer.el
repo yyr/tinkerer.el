@@ -1,6 +1,6 @@
 ;;; tinkerer.el --- Elisp wrapper for Tinkerer Blogging Engine.
 
-;; Copyright (C) 2015 Yagnesh Raghava Yakkala
+;; Copyright (C) 2015, 2016 Yagnesh Raghava Yakkala
 
 ;; Author: Yagnesh Raghava Yakkala <hi@yagnesh.org>
 ;; Created: 19 Feb 2015
@@ -39,31 +39,33 @@
 
 (defcustom tinkerer-root-path nil
   "Tinkerer blog root folder path."
-  :group 'tinkerer)
+  :group 'tinkerer
+  :type 'path)
 
 (defcustom tinkerer-executable "tinker"
   "The location of the tinkerer executable."
   :group 'tinkerer
   :type 'string)
 
-(defcustom tinkerer-keymap-prefix (kbd "C-c C-t")
-  "Tinkerer keymap prefix."
-  :group 'tinkerer
-  :type 'string)
+(defcustom tinkerer-prefix-key (kbd "C-c C-t")
+ "Tinkerer keymap prefix."
+ :group 'tinkerer
+ :type 'string)
 
-(defvar tinkerer-command-map
-  (let ((map (make-sparse-keymap)))
+(defvar tinkerer-prefix-map
+  (let ((map 'tinkerer-prefix-command))
     (define-key map "d" 'tinkerer-draft)
     (define-key map "D" 'tinkerer-preview-draft)
     (define-key map "P" 'tinkerer-page)
     (define-key map "p" 'tinkerer-post)
-    (define-key map "b" 'tinkerer-build)))
-
-(defvar tinkerer-key-map
-  (let ((map (make-sparse-keymap)))
-    (define-key map tinkerer-keymap-prefix 'tinkerer-command-map)
-    map)
+    (define-key map "b" 'tinkerer-build))
   "Tinkerer key map.")
+
+(define-prefix-command
+  'tinkerer-prefix-command
+  'tinkerer-prefix-map "Tinkerer")
+
+(global-set-key tinkerer-prefix-key 'tinkerer-prefix-command)
 
 ;;;
 (defvar tinkerer--hist nil)
@@ -139,6 +141,9 @@ If prefix argument ARG provided move a draft and publish it."
     (let ((default-directory tinkerer-root-path))
       (async-shell-command
        (tinkerer--construct-command "--preview" (expand-file-name draft drafts-path))))))
+
+;;;###autoload
+(global-set-key tinkerer-prefix-key 'tinkerer-prefix-command)
 
 (provide 'tinkerer)
 ;;; tinkerer.el ends here
