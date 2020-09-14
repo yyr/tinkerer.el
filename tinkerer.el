@@ -1,6 +1,6 @@
 ;;; tinkerer.el --- Elisp wrapper for Tinkerer Blogging Engine.
 
-;; Copyright (C) 2015, 2016, 2017 Yagnesh Raghava Yakkala
+;; Copyright (C) 2015, 2016, 2017, 2020 Yagnesh Raghava Yakkala
 
 ;; Author: Yagnesh Raghava Yakkala <hi@yagnesh.org>
 ;; Created: 19 Feb 2015
@@ -53,6 +53,12 @@
  :group 'tinkerer
  :type 'string)
 
+;;;###autoload
+(define-prefix-command
+  'tinkerer-prefix-command
+  'tinkerer-prefix-map "Tinkerer")
+
+;;;###autoload
 (defvar tinkerer-prefix-map
   (let ((map 'tinkerer-prefix-command))
     (define-key map "d" 'tinkerer-draft)
@@ -61,10 +67,6 @@
     (define-key map "p" 'tinkerer-post)
     (define-key map "b" 'tinkerer-build))
   "Tinkerer key map.")
-
-(define-prefix-command
-  'tinkerer-prefix-command
-  'tinkerer-prefix-map "Tinkerer")
 
 (global-set-key tinkerer-prefix-key 'tinkerer-prefix-command)
 
